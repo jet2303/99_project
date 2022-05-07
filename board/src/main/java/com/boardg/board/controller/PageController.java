@@ -65,6 +65,11 @@ public class PageController {
     }
     // .addObject("board", pageLogicService.getBoardDetail(70L))
 
-    
+    @PostMapping("")
+    public ModelAndView create(@ModelAttribute Board newBoard){
+        Long id = boardLogicService.create(pageLogicService.addHeader(newBoard)).getData().getId();
+
+        return new ModelAndView("/board/view").addObject("board", pageLogicService.getBoardDetail(id));
+    }
 
 }
