@@ -31,8 +31,9 @@
 						<td class="text-left">
 							<a th:href="@{/boardPage/{id} (id=${row.id} )}" th:text="${row.title}"></a>
 						</td>
-						<td th:text="${row.title}"></td>
-						<td th:text="${#temporals.format( row.registeredAt, 'yyyy-MM-dd' )}"></td>
+						<td th:text="${row.createdBy}"></td>
+						<td class="text-center" th:text="${#temporals.format( row.registeredAt, 'yyyy-MM-dd   HH:mm:ss' )}">
+						</td>
 						
 					</tr>
 					<tr th:unless="${not #lists.isEmpty( boardList )}">
@@ -42,7 +43,7 @@
 			</table>
 
 			<div class="btn_wrap text-right">
-				<a th:href="@{/boardPage/write}" class="btn btn-primary waves-effect waves-light">Write</a>
+				<a th:href="@{/boardPage/write/0}" class="btn btn-primary waves-effect waves-light">Write</a>
 			</div>
 
 			<th:block layout:fragment="paging">

@@ -2,7 +2,9 @@ package com.boardg.board.controller;
 
 import com.boardg.board.ifs.CrudInterface;
 import com.boardg.board.model.entity.Board;
-import com.boardg.board.model.network.Header;
+
+import com.boardg.board.model.network.request.BoardApiRequest;
+import com.boardg.board.model.network.response.BoardApiResponse;
 import com.boardg.board.service.BaseService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,28 +27,28 @@ public abstract class CrudController<Req, Res, T> implements CrudInterface<Req, 
 
     @Override
     @PostMapping("")
-    public Header<Res> create(Header<Req> request) {
+    public BoardApiResponse create(BoardApiRequest request) {
         log.info("{}", request);
         return baseService.create(request);
     }
 
     @Override
     @GetMapping("/{id}")
-    public Header<Res> read(@PathVariable Long id) {
+    public BoardApiResponse read(@PathVariable Long id) {
         log.info("{}",id);
         return baseService.read(id);
     }
 
     @Override
     @PutMapping("")
-    public Header<Res> update(Header<Req> request) {
+    public BoardApiResponse update(BoardApiRequest request) {
         
         return baseService.update(request);
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public Header<Res> delete(@PathVariable Long id) {
+    public BoardApiResponse delete(@PathVariable Long id) {
         
         return baseService.delete(id);
     }

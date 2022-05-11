@@ -18,7 +18,7 @@
 				<div class="form-group">
 					<label for="inp-type-2" class="col-sm-2 control-label">이름</label>
 					<div class="col-sm-10">
-						<p class="form-control" th:text="*{id}"></p>
+						<p class="form-control" th:text="*{createdBy}"></p>
 					</div>
 				</div>
 
@@ -35,13 +35,29 @@
 						<p class="form-control" th:text="*{#temporals.format( registeredAt, 'yyyy-MM-dd' )}"></p>
 					</div>
 				</div> 
-
+				
 			</form>
 
 			<div class="btn_wrap text-center">
 				<a th:href="@{/boardPage/main}" class="btn btn-default waves-effect waves-light">뒤로가기</a>
-				<a th:href="@{/board/write.do( id=${boardDetail.id} )}" class="btn btn-primary waves-effect waves-light">수정하기</a>
-				<button type="button" class="btn btn-danger waves-effect waves-light" th:onclick="deleteBoard([[ ${boardDetail.id} ]])">삭제하기</button>
+				<!-- <a th:href="@{/boardPage/write( id=${boardDetail.id} )}" class="btn btn-primary waves-effect waves-light">수정하기</a> -->
+				
+				<form th:action="@{/boardPage/write/{id} (id=${boardDetail.id})}" th:object="${boardDetail}" method="get">
+					<!-- <input type="hidden" name="_method" value="put"> -->
+					<!-- <input type="hidden" th:field="*{id}">
+					<input type="hidden" th:field="*{title}">
+					<input type="hidden" th:field="*{content}">
+					<input type="hidden" th:field="*{createdBy}">
+					<input type="hidden" th:field="*{registeredAt}">
+					<input type="hidden" th:field="*{status}"> -->
+					<button type="submit" class="btn btn-primary waves-effect waves-light">수정하기</button>
+				</form>
+				
+				<form th:action="@{/boardPage/{id} (id=${boardDetail.id})}" method="post">
+					<input type="hidden" name="_method" value="DELETE">
+					<button type="submit" class="btn btn-danger waves-effect waves-light" onclick="alert('삭제되었습니다.')">삭제하기</button>
+				</form>
+				
 			</div> 
 		</div>
 		<!-- /.card-content -->

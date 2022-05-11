@@ -1,14 +1,16 @@
 package com.boardg.board.ifs;
 
-import com.boardg.board.model.network.Header;
+
+import com.boardg.board.model.network.request.BoardApiRequest;
+import com.boardg.board.model.network.response.BoardApiResponse;
 
 public interface CrudInterface<Req,Res> {
     
-    public Header<Res> create(Header<Req> request);
+    public BoardApiResponse create(BoardApiRequest request);
 
-    public Header<Res> read(Long id);
+    public BoardApiResponse read(Long id);
 
-    public Header<Res> update(Header<Req> request);
+    public BoardApiResponse update(BoardApiRequest request);
 
-    public Header<Res> delete(Long id);
+    public BoardApiResponse delete(Long id);
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.boardg.board.model.entity.Board;
+import com.boardg.board.model.network.request.BoardApiRequest;
 import com.boardg.board.model.network.response.BoardApiResponse;
 import com.boardg.board.repository.BoardRepository;
 import com.boardg.board.service.BoardLogicService;
@@ -11,10 +12,12 @@ import com.boardg.board.service.page.PageLogicService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -34,16 +37,6 @@ public class PageController {
     @Autowired
     private PageLogicService pageLogicService;
 
-    @GetMapping("/index")
-    public ModelAndView index(){
-        // log.info(">>>>>>>>>>> {}", boardLogicService.read(70L));
-        BoardApiResponse boardaApiResponse =  boardLogicService.read(70L).getData();
-        log.info("boardresponse : {}",boardaApiResponse);
-        return new ModelAndView("/page/main")
-                    .addObject("lists",boardaApiResponse);
-                        
-    }
-
     @GetMapping("/main")
     public ModelAndView boardList(){
 
@@ -52,24 +45,43 @@ public class PageController {
 
     @GetMapping("/{id}")
     public ModelAndView boardDetail(@PathVariable Long id){
-        return new ModelAndView("/board/view").addObject("boardDetail", pageLogicService.getBoardDetail(id));
+        Board board = pageLogicService.getBoardDetail(id);
+        return new ModelAndView("/board/view").addObject("boardDetail", board);
     }
 
-    @GetMapping("/write")
-    public ModelAndView write(@PathVariable(required = false) Long id){
-        if(id==null){
+    @GetMapping("/write/{id}")
+    public ModelAndView write(@PathVariable Long id){
+        //id값 null일때 생성
+        if(id==0){
             //리펙토링 필요.
-            return new ModelAndView("/board/write").addObject("board", new Board());
+            //빈 객체 리턴
+            return new ModelAndView("/board/write").addObject("boardDetail", new Board());
         }
-        return new ModelAndView("/board/write").addObject("board", pageLogicService.getBoardDetail(id));
+        // return new ModelAndView("/board/write").addObject("board", pageLogicService.getBoardDetail(id));
+        
+        //id값 있을때 수정할 view 리턴
+        
+        return new ModelAndView("/board/update")
+                        .addObject("boardDetail", boardLogicService.read(id));
     }
-    // .addObject("board", pageLogicService.getBoardDetail(70L))
 
+    
     @PostMapping("")
     public ModelAndView create(@ModelAttribute Board newBoard){
-        Long id = boardLogicService.create(pageLogicService.addHeader(newBoard)).getData().getId();
+        return new ModelAndView("redirect:boardPage/main").addObject("boardDetail", pageLogicService.createBoard(newBoard));
+    }
 
-        return new ModelAndView("/board/view").addObject("board", pageLogicService.getBoardDetail(id));
+    @PutMapping("")
+    public ModelAndView put(@ModelAttribute Board newBoard){
+        Board board = pageLogicService.updateBoard(newBoard);
+        return new ModelAndView("/board/view").addObject("boardDetail", pageLogicService.getBoardDetail(board.getId()));
+    }
+
+    @DeleteMapping("/{id}")
+    public ModelAndView delete(@PathVariable Long id){
+        // boardLogicService.delete(id);
+        
+        return new ModelAndView("redirect:main").addObject("board", pageLogicService.delBoard(id));
     }
 
 }

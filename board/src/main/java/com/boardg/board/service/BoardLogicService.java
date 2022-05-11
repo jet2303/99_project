@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import com.boardg.board.model.entity.Board;
 import com.boardg.board.model.enumclass.BoardStatus;
-import com.boardg.board.model.network.Header;
 import com.boardg.board.model.network.request.BoardApiRequest;
 import com.boardg.board.model.network.response.BoardApiResponse;
 import com.boardg.board.repository.BoardRepository;
@@ -22,37 +21,45 @@ public class BoardLogicService extends BaseService<BoardApiRequest, BoardApiResp
     private BoardRepository boardRepository;
 
     @Override
-    public Header<BoardApiResponse> create(Header<BoardApiRequest> request) {
-        BoardApiRequest boardApiRequest = request.getData();
+    public BoardApiResponse create(BoardApiRequest request) {
+        
 
         Board board = Board.builder()
-                            .title(boardApiRequest.getTitle())
-                            .content(boardApiRequest.getContent())
+                            .title(request.getTitle())
+                            .content(request.getContent())
                             .status(BoardStatus.REGISTERED)
                             .registeredAt(LocalDateTime.now())
                             .build();
         Board newBoard = baseRepository.save(board);
 
-        return Header.OK(response(newBoard));
+        return response(newBoard);
     }
 
     @Override
-    public Header<BoardApiResponse> read(Long id) {
-        Board board = boardRepository.findById(id).orElseThrow(() -> new RuntimeException("boardlogicservice read Error"));
-        log.info("Header read response() : {}", Header.OK(response(board)));
-        return Header.OK(response(board));
+    public BoardApiResponse read(Long id) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new RuntimeException("게시글이 없습니다."));
+        log.info("Header read response() : {}", response(board));
+        return response(board);
     }
 
     @Override
-    public Header<BoardApiResponse> update(Header<BoardApiRequest> request) {
+    public BoardApiResponse update(BoardApiRequest request) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Header<BoardApiResponse> delete(Long id) {
-        // TODO Auto-generated method stub
-        return null;
+    public BoardApiResponse delete(Long id) {
+        Board board = boardRepository.findById(id).orElseThrow( () -> new RuntimeException("삭제할 게시글이 없습니다."));
+        board.setStatus(BoardStatus.UNREGISTERED);
+        return BoardApiResponse.builder()
+                                .id(id)
+                                .title(board.getTitle())
+                                .content(board.getContent())
+                                .status(board.getStatus())
+                                .registeredAt(board.getRegisteredAt())
+                                .unregisteredAt(board.getUnregisteredAt())
+                                .build();        
     }
 
     private BoardApiResponse response(Board board){
@@ -64,7 +71,7 @@ public class BoardLogicService extends BaseService<BoardApiRequest, BoardApiResp
                                                             .unregisteredAt(board.getUnregisteredAt())
                                                             .status(board.getStatus())
                                                             .build();
-        return boardApiResponse;                                                                
+        return boardApiResponse;
     }
 
 }

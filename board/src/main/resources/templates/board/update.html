@@ -6,14 +6,13 @@
 
 	<th:block layout:fragment="content">
 		<div class="card-content">
-			<form class="form-horizontal" th:action="@{/boardPage}" th:object="${boardDetail}" method="post" onsubmit="return registerBoard(this)">
-				<!-- th:if="${id != null and id>0}" -->
-                <!-- onsubmit="return registerBoard(this) -->
+			<form class="form-horizontal" th:if="${id != null and id>0}" th:action="@{/boardPage}" th:object="${boardDetail}" method="post" onsubmit="return registerBoard(this)">
+				<!-- onsubmit="return registerBoard(this) -->
 				<!--/* update의 경우 서버로 전달할 게시글 번호 (PK) */-->
 				<!-- <input type="hidden" th:if="*{id != null and id > 0}" th:field="*{id}" /> -->
-				
+				<!-- <input type="hidden" name="_method" value="put"> -->
 
-				
+				<input type="hidden" name="_method" value="put">
 				<input type="hidden" th:field="*{id}">
 				<input type="hidden" th:field="*{registeredAt}">
 				<input type="hidden" th:field="*{status}">
