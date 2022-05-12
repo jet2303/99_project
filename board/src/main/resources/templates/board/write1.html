@@ -6,13 +6,19 @@
 
 	<th:block layout:fragment="content">
 		<div class="card-content">
-			<form class="form-horizontal" name="contentName" th:action="@{/boardPage}" th:object="${boardDetail}" method="post" enctype="multipart/form-data">
+			<form class="form-horizontal" th:action="@{/boardPage}" method="post" enctype="multipart/form-data">
 				<!-- th:object="${boardDetail}" -->
 				<!-- th:if="${id != null and id>0}" -->
                 <!-- onsubmit="return registerBoard(this) -->
 				<!--/* update의 경우 서버로 전달할 게시글 번호 (PK) */-->
 				<!-- <input type="hidden" th:if="*{id != null and id > 0}" th:field="*{id}" /> -->
-			
+				
+
+				
+				<input type="hidden" th:field="*{id}">
+				<input type="hidden" th:field="*{registeredAt}">
+				<input type="hidden" th:field="*{status}">
+				<input type="hidden" th:field="*{unregisteredAt}">
 				<div class="form-group">
 					<label for="title" class="col-sm-2 control-label">제목</label>
 					<div class="col-sm-10">
@@ -31,7 +37,7 @@
 					<label for="inp-type-5" class="col-sm-2 control-label">첨부파일</label>
 					<div class="col-sm-10">
 						<p class="form-control">
-							<input type="file" name="uploadfiles" multiple="multiple" class="custom-file-input" >
+							<input type="file" multiple="multiple" class="custom-file-input" id="customFile">
 						</p>
 					</div>
 				</div>

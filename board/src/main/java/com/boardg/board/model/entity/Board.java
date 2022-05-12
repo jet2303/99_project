@@ -55,17 +55,7 @@ public class Board extends BaseEntity{
     private LocalDateTime registeredAt;
     private LocalDateTime unregisteredAt;
 
-    // @CreatedDate
-    // private LocalDateTime createdAt;
 
-    // @CreatedBy
-    // private String createdBy;
-
-    // @LastModifiedDate
-    // private LocalDateTime updatedAt;
-
-    // @LastModifiedBy
-    // private String updatedBy;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "board")
     private List<FileInfo> fileList;

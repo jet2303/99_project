@@ -12,6 +12,7 @@ import com.boardg.board.service.page.PageLogicService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.slf4j.Slf4j;
@@ -67,8 +70,9 @@ public class PageController {
 
     
     @PostMapping("")
-    public ModelAndView create(@ModelAttribute Board newBoard){
-        return new ModelAndView("redirect:boardPage/main").addObject("boardDetail", pageLogicService.createBoard(newBoard));
+    public ModelAndView create(@ModelAttribute("boardDetail") Board newBoard, @RequestParam("uploadfiles") List<MultipartFile> files) throws Exception{
+        pageLogicService.createBoard(newBoard, files);
+        return new ModelAndView("redirect:boardPage/main");
     }
 
     @PutMapping("")

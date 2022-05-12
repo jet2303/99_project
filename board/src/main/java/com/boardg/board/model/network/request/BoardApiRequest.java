@@ -31,5 +31,13 @@ public class BoardApiRequest {
     private LocalDateTime registeredAt;
     private LocalDateTime unregisteredAt;
 
+    private LocalDateTime createdAt;
+    private String createdBy;
+
+    private LocalDateTime updatedAt;
+    private String updatedBy;
+
+    
+
     // private List<FileInfo> fileInfo;
 }

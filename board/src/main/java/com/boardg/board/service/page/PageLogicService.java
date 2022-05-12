@@ -1,19 +1,28 @@
 package com.boardg.board.service.page;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import com.boardg.board.model.entity.Board;
+import com.boardg.board.model.entity.FileInfo;
 import com.boardg.board.model.enumclass.BoardStatus;
 import com.boardg.board.model.network.request.BoardApiRequest;
 import com.boardg.board.model.network.response.BoardApiResponse;
 import com.boardg.board.repository.BoardRepository;
+import com.boardg.board.repository.FileInfoRepository;
 import com.boardg.board.service.BoardLogicService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 @Service
@@ -23,7 +32,9 @@ public class PageLogicService {
     private BoardRepository boardRepository;
 
     @Autowired
-    private BoardLogicService boardLogicService;
+    private FileInfoRepository fileInfoRepository;
+
+    
 
     //게시글 리스트
     public List<Board> getBoardList(){
@@ -65,11 +76,30 @@ public class PageLogicService {
         
     } 
 
-    public Board createBoard(Board newBoard){
+    //Exception custom Error 화면으로 바꿀것.
+    public Board createBoard(Board newBoard, List<MultipartFile> files) throws IOException{
         
+        Board board = boardRepository.save(newBoard);
+
+        
+        String filePath = "D:\\fastcampus\\99_project\\board\\src\\main\\resources\\static\\files";
+
         newBoard.setRegisteredAt(LocalDateTime.now())
                 .setStatus(BoardStatus.REGISTERED);
-        Board board = boardRepository.save(newBoard);
+
+        List<FileInfo> fileList = new ArrayList<>();
+        for (MultipartFile file : files) {
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            File saveFile = new File(filePath,fileName);
+            file.transferTo(saveFile);
+            FileInfo fileInfo = new FileInfo(fileName, "/files/"+ fileName);
+            fileInfo.setBoardIdx(board.getId());
+            fileList.add(fileInfo);
+        }
+
+        fileInfoRepository.saveAll(fileList);
+
+        
 
         return board;
     }
@@ -91,7 +121,8 @@ public class PageLogicService {
     //게시글 삭제
     public Board delBoard(Long id){
         Board board = boardRepository.findById(id).orElseThrow(() -> new RuntimeException("삭제할 게시글이 없습니다."));
-        board.setStatus(BoardStatus.UNREGISTERED);
+        board.setStatus(BoardStatus.UNREGISTERED).setUnregisteredAt(LocalDateTime.now());
+        
         boardRepository.save(board);
         return board;
     }

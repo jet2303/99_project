@@ -27,7 +27,7 @@ public class FileInfo {
     private Long id;
 
     @NonNull
-    private String boardNo;
+    private Long boardIdx;
 
     private String fileName;
 
@@ -35,4 +35,9 @@ public class FileInfo {
 
     @ManyToOne
     private Board board;    
+
+    public FileInfo(String fileName, String filePath){
+        this.fileName = fileName;
+        this.filePath = filePath;
+    }
 }
