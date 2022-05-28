@@ -2,8 +2,10 @@ package com.boardg.board.model.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -27,8 +29,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @Entity
@@ -38,6 +42,8 @@ import lombok.experimental.Accessors;
 // @EntityListeners(AuditingEntityListener.class)
 @Builder
 @Accessors(chain = true)
+@ToString(exclude = "fileInfoList")             //필드명... 클래스 명이 아님....
+// @EqualsAndHashCode(exclude = "id")
 public class Board extends BaseEntity{
 
     @Id
@@ -55,10 +61,10 @@ public class Board extends BaseEntity{
     private LocalDateTime registeredAt;
     private LocalDateTime unregisteredAt;
 
-
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "board")
-    private List<FileInfo> fileList;
+    @OneToMany(mappedBy = "board")
+    private List<FileInfo> fileInfoList = new ArrayList<>();
+    
+    
 
     // @Builder
     // public Board(Long id, String title, String content, BoardStatus status, LocalDateTime registeredAt, LocalDateTime unregisteredAt){

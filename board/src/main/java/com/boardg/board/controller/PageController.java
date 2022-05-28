@@ -3,6 +3,7 @@ package com.boardg.board.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.boardg.board.model.dto.BoardDto;
 import com.boardg.board.model.entity.Board;
 import com.boardg.board.model.network.request.BoardApiRequest;
 import com.boardg.board.model.network.response.BoardApiResponse;
@@ -48,8 +49,15 @@ public class PageController {
 
     @GetMapping("/{id}")
     public ModelAndView boardDetail(@PathVariable Long id){
-        Board board = pageLogicService.getBoardDetail(id);
-        return new ModelAndView("/board/view").addObject("boardDetail", board);
+        // Board board = pageLogicService.getBoardDetail(id);
+        // List<Object[]> result = pageLogicService.getBoardDetail(id);
+        BoardApiResponse boardApiResponse = pageLogicService.getBoardDetail(id);
+        log.info("controller : {}", boardApiResponse);
+
+        //리펙토링.... DTO에 전부 담아 타임리프 VIew에서 파일리스트만 따로 반복문 돌릴수는 없나...
+        return new ModelAndView("/board/view").addObject("boardDetail", boardApiResponse)
+                                                        .addObject("fileList", boardApiResponse.getFileInfo());
+                                                        
     }
 
     @GetMapping("/write/{id}")
@@ -68,6 +76,12 @@ public class PageController {
                         .addObject("boardDetail", boardLogicService.read(id));
     }
 
+    @GetMapping("/search")
+    public ModelAndView search(@RequestParam(required = false, name = "title") String title){
+
+        return new ModelAndView("/board/list").addObject("boardList", pageLogicService.getBoardKeywordList(title));
+    }
+
     
     @PostMapping("")
     public ModelAndView create(@ModelAttribute("boardDetail") Board newBoard, @RequestParam("uploadfiles") List<MultipartFile> files) throws Exception{
@@ -76,8 +90,8 @@ public class PageController {
     }
 
     @PutMapping("")
-    public ModelAndView put(@ModelAttribute Board newBoard){
-        Board board = pageLogicService.updateBoard(newBoard);
+    public ModelAndView put(@ModelAttribute Board newBoard, @RequestParam("uploadfiles") List<MultipartFile> files) throws Exception{
+        Board board = pageLogicService.updateBoard(newBoard, files);
         return new ModelAndView("/board/view").addObject("boardDetail", pageLogicService.getBoardDetail(board.getId()));
     }
 

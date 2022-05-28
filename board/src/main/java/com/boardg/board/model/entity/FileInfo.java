@@ -1,17 +1,21 @@
 package com.boardg.board.model.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @Entity
@@ -20,21 +24,20 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Builder
 @Accessors(chain = true)
-@RequiredArgsConstructor
 public class FileInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NonNull
-    private Long boardIdx;
+    // private Long boardId;
 
     private String fileName;
 
     private String filePath;
 
     @ManyToOne
-    private Board board;    
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     public FileInfo(String fileName, String filePath){
         this.fileName = fileName;

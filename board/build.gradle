@@ -29,12 +29,18 @@ dependencies {
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
 	
+	//p6spy를 이용한 로깅(외부라이브러리).
+	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
+
+
+	compile("org.springframework.boot:spring-boot-starter-data-jpa")
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	runtimeOnly 'mysql:mysql-connector-java:8.0.20'
+	
 	
 }
 

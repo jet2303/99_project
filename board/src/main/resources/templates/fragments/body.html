@@ -3,9 +3,14 @@
 	<body th:fragment="main-body">
 		<div class="fixed-navbar">
 			<div class="pull-left">
-				<h1 class="page-title">Board</h1>
+				<!-- <a th:href="@{/boardPage/main}"  class="page-title">Board</a> -->
+				<!-- <h1 class="page-title">Board</h1> -->
+				<a th:href="@{/boardPage/main}">
+					<h1 class="page-title" style="color:aliceblue">Board</h1>
+				</a>
 			</div>
 		</div>
+		<!-- <h1></h1> -->
 		<!-- /.fixed-navbar -->
 
 		<div id="wrapper">
