@@ -33,12 +33,15 @@
 					</div>
 				</div>
 
-				<!-- 기존 파일첨부 리스트 확인 및 수정  -->
+				<!-- if 첨부파일 유무에 따라 내려줄 view 구분  -->
 				<div class="form-group">
 					<label for="inp-type-5" class="col-sm-2 control-label">첨부파일</label>
 					<div class="col-sm-10">
 						<p class="form-control">
-							<input type="file" name="uploadfiles" multiple="multiple" class="custom-file-input" >
+							<input type="file" name="uploadfiles" multiple="multiple" class="custom-file-input">
+							<tr th:each="file : ${fileList}">
+								<a th:text="${file.fileName}"></a>
+							</tr>
 						</p>
 					</div>
 				</div>

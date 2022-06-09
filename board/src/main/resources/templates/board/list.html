@@ -22,11 +22,11 @@
 						<th>제목</th>
 						<th>작성자</th>
 						<th>등록일</th>
-						
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:if="${not #lists.isEmpty( boardList )}" th:each="row : ${boardList}">
+					<!-- <tr th:if="${not #lists.isEmpty( boardList )}" th:each="row : ${boardList}"> -->
+						<tr th:if="${not #lists.isEmpty( pagenation.data )}" th:each="row : ${pagenation.data}">
 						<td scope="row" th:text="${row.id}"></td>
 						<td class="text-left">
 							<a th:href="@{/boardPage/{id} (id=${row.id} )}" th:text="${row.title}"></a>
@@ -36,7 +36,7 @@
 						</td>
 						
 					</tr>
-					<tr th:unless="${not #lists.isEmpty( boardList )}">
+					<tr th:unless="${not #lists.isEmpty( pagenation.data )}">
 						<td colspan="5">조회된 결과가 없습니다.</td>
 					</tr>
 				</tbody>
@@ -47,18 +47,28 @@
 			</div>
 
 			<th:block layout:fragment="paging">
-				<nav aria-label="Page navigation" class="text-center">
+				<nav aria-label="Page navigation" class="text-center"
+				th:with="
+					pageNumber=${pagenation.pagenation.currentPage},
+					pageSize=${pagenation.pagenation.currentElements},
+					
+					totalPages = ${pagenation.pagenation.totalpages},
+					startPage = ${T(java.lang.Math).floor(pageNumber / pageSize) * pageSize + 1},
+					tempEndPage = ${startPage + pageSize - 1},
+					endPage = (${tempEndPage > totalPages ? totalPages : tempEndPage})"
+				>
 					<ul class="pagination">
 						<li>
 							<a href="#" aria-label="Previous">
 								<span aria-hidden="true">&laquo;</span>
 							</a>
 						</li>
-						<li><a href="#">1</a></li>
-						<li><a href="#">2</a></li>
-						<li><a href="#">3</a></li>
-						<li><a href="#">4</a></li>
-						<li><a href="#">5</a></li>
+						<!-- ${#numbers.sequence(start,end)} start~end
+						th:classappend="${page== pageNumber+1} ? 'active'" -->
+						<li th:each="page: ${#numbers.sequence(startPage,endPage)}" th:classappend="${page==pageNumber+1} ? 'active'"  class="page-item">
+							<!-- query parameter 사용시 아래처럼 포맷맞출것. -->
+							<a th:text="${page}" class="page-link" th:href="@{/boardPage/page(page=${page-1})}"></a>
+						</li>
 						<li>
 							<a href="#" aria-label="Next">
 								<span aria-hidden="true">&raquo;</span>

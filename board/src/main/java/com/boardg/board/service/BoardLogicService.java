@@ -38,7 +38,7 @@ public class BoardLogicService extends BaseService<BoardApiRequest, BoardApiResp
     @Override
     public BoardApiResponse read(Long id) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new RuntimeException("게시글이 없습니다."));
-        log.info("Header read response() : {}", response(board));
+        log.info("read response() : {}", response(board));
         return response(board);
     }
 

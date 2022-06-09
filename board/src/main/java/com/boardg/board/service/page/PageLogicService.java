@@ -24,6 +24,8 @@ import com.boardg.board.model.dto.BoardDto;
 import com.boardg.board.model.entity.Board;
 import com.boardg.board.model.entity.FileInfo;
 import com.boardg.board.model.enumclass.BoardStatus;
+import com.boardg.board.model.network.Header;
+import com.boardg.board.model.network.Pagenation;
 import com.boardg.board.model.network.request.BoardApiRequest;
 import com.boardg.board.model.network.response.BoardApiResponse;
 import com.boardg.board.repository.BoardRepository;
@@ -31,11 +33,14 @@ import com.boardg.board.repository.FileInfoRepository;
 import com.boardg.board.service.BoardLogicService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.description.type.TypeList.Generic.ForDetachedTypes;
 
 
 
@@ -52,9 +57,22 @@ public class PageLogicService {
     @PersistenceUnit
     EntityManagerFactory emf;
 
-
+    private final String filePath = "D:\\fastcampus\\99_project\\board\\src\\main\\resources\\static\\files";
     //게시글 리스트
-    public List<Board> getBoardList(){
+    // public List<Board> getBoardList(){
+    //     // List<Board> boardList = boardRepository.findAll();
+    //     List<Board> boardList = boardRepository.findByStatus(BoardStatus.REGISTERED).orElseThrow( () -> new RuntimeException("게시글이 없습니다."));
+
+    //     if(boardList.size()<1){
+    //         // return new RuntimeException();
+    //     }
+    //     List<BoardApiResponse> boardApiResponses = new ArrayList<>();
+
+    //     boardList.stream().map( board-> boardApiResponses.add(response(board, null)));
+
+    //     return boardList;
+    // }
+    public Header<List<BoardApiResponse>> getBoardList(){
         // List<Board> boardList = boardRepository.findAll();
         List<Board> boardList = boardRepository.findByStatus(BoardStatus.REGISTERED).orElseThrow( () -> new RuntimeException("게시글이 없습니다."));
 
@@ -65,38 +83,31 @@ public class PageLogicService {
 
         boardList.stream().map( board-> boardApiResponses.add(response(board, null)));
 
-        return boardList;
+        return Header.OK(boardApiResponses);
     }
 
-    public List<Board> getBoardKeywordList(String title){
-        List<Board> boardList = boardRepository.findByTitleAndStatus(title, BoardStatus.REGISTERED).orElseThrow( () -> new RuntimeException("게시글이 없습니다."));
-
-        return boardList;
+    public Header<List<BoardApiResponse>> getBoardKeywordList(String title, Pageable pageable){
+        if(title==""){
+            return search(pageable);
+            // return Header.ERROR("찾을 키워드를 입력");
+        }
+        Page<Board> boardList = boardRepository.findByTitleAndStatus(title, BoardStatus.REGISTERED, pageable).orElseThrow( () -> new RuntimeException("게시글이 없습니다."));
+        List<BoardApiResponse> boardApiResponse = boardList.stream().map(board -> response(board))
+                                                                    .collect(Collectors.toList());
+        Pagenation pagenation = Pagenation.builder()
+                                            .totalpages(boardList.getTotalPages())
+                                            .totalElements(boardList.getTotalElements())
+                                            .currentPage(boardList.getNumber())
+                                            .currentElements(boardList.getNumberOfElements())
+                                            .build();
+        
+        
+        return Header.OK(boardApiResponse, pagenation);
     }
 
 
     //게시글 상세뷰
     public BoardApiResponse getBoardDetail(Long id){
-        // Board board = new Board();
-        // if(id==null){
-        //     return board;
-        // }
-        // else{
-        //     board = boardRepository.findById(id).orElseThrow(() -> new RuntimeException("해당 게시글이 없습니다."));
-        // }
-        // return board;
-
-        // BoardApiResponse boardApiResponse =  boardLogicService.read(id);
-        // return Board.builder()
-        //             .id(boardApiResponse.getId())
-        //             .title(boardApiResponse.getTitle())
-        //             .content(boardApiResponse.getContent())
-        //             .registeredAt(boardApiResponse.getRegisteredAt())
-        //             .status(boardApiResponse.getStatus())
-        //             .unregisteredAt(boardApiResponse.getUnregisteredAt())
-        //             .build();
-        
-        // Board board = boardRepository.findById(id).orElseThrow( () -> new RuntimeException("not found board"));
         
         List<Board> result = boardRepository.findDetail(id).orElseThrow(() -> new RuntimeException("게시글 존재하지 않음."));
         
@@ -109,7 +120,7 @@ public class PageLogicService {
     //Exception custom Error 화면으로 바꿀것.
     public BoardApiResponse createBoard(Board newBoard, List<MultipartFile> files) throws IOException{
 
-        String filePath = "D:\\fastcampus\\99_project\\board\\src\\main\\resources\\static\\files";
+        // String filePath = "D:\\fastcampus\\99_project\\board\\src\\main\\resources\\static\\files";
         
         newBoard.setRegisteredAt(LocalDateTime.now())
                 .setStatus(BoardStatus.REGISTERED);
@@ -130,42 +141,73 @@ public class PageLogicService {
         return response(board, fileList);
     }
 
+    //file list UUID set Method
+    // private List<FileInfo> setUuidFileList(List<MultipartFile> files){
+        
+    // }
+
     //게시글 업데이트
-    public Board updateBoard(Board newBoard, List<MultipartFile> files){
+    public BoardApiResponse updateBoard(Board newBoard, List<MultipartFile> files) throws Exception{
         Board board =  boardRepository.findById(newBoard.getId()).orElseThrow( () -> new RuntimeException("해당 게시글이 없습니다."));
         board.setTitle(newBoard.getTitle())
             .setContent(newBoard.getContent())
-            .setRegisteredAt(newBoard.getRegisteredAt())
+            // .setRegisteredAt(newBoard.getRegisteredAt())
             .setStatus(BoardStatus.REGISTERED)
             .setUnregisteredAt(newBoard.getUnregisteredAt());
         
-        boardRepository.save(board);
+        Board saveBoard = boardRepository.save(board);
 
-        List<String> updateFileList = files.stream().map(file->file.getOriginalFilename()).collect(Collectors.toList());
         //수정된 첨부파일 유무에 따른 조건 추가
         //DB에서 게시글에 해당하는 첨부파일 목록 확인 및 수정된 첨부파일 목록 비교.
         //1. 첨부파일이 수정안된 경우 -> 저장X
-        //2. 첨부파일이 하나라도 수정된 경우 -> 첨부파일 삭제 후 재 등록
-        
-        List<FileInfo> fileList = fileInfoRepository.findByBoard(newBoard).orElseThrow( ()-> new RuntimeException("해당 게시글의 첨부파일이 없습니다."));
-        // log.info("{}", fileList.stream().map(file->file.getFileName())
-        //                                         .collect(Collectors.toList()));
-        List<String> oldFileList = fileList.stream().map(file->file.getFileName())
-                                                        .collect(Collectors.toList());
-        log.info("updatefile : {}", updateFileList);
-        log.info("oldfilelist : {}", oldFileList);
-        // files.stream().map( () -> )
-        
-        return board;
+        //2. 첨부파일이 하나라도 수정된 경우 -> 첨부파일 삭제 후 재 등록        
+        fileInfoRepository.deletefile(board);
+        List<FileInfo> fileInfoList = new ArrayList<>();
+        //
+        for (MultipartFile file : files) {
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            File saveFile = new File(filePath, fileName);
+            file.transferTo(saveFile);
+            FileInfo fileInfo = new FileInfo(fileName, "/files/"+ fileName);
+            fileInfo.setBoard(saveBoard);
+            fileInfoList.add(fileInfo);
+        }
+        fileInfoRepository.saveAll(fileInfoList);
+
+        return response(saveBoard, fileInfoList);
     }
 
     //게시글 삭제
     public Board delBoard(Long id){
-        Board board = boardRepository.findById(id).orElseThrow(() -> new RuntimeException("삭제할 게시글이 없습니다."));
-        board.setStatus(BoardStatus.UNREGISTERED).setUnregisteredAt(LocalDateTime.now());
+        Board board = boardRepository.findById(id)
+                                        .orElseThrow(() -> new RuntimeException("삭제할 게시글이 없습니다."));
+        board.setStatus(BoardStatus.UNREGISTERED)
+                .setUnregisteredAt(LocalDateTime.now());
         
         boardRepository.save(board);
         return board;
+    }
+
+    public Header<List<BoardApiResponse>> search(Pageable pageable){
+        
+        //
+        // Page<Board> boards = boardRepository.findByStatus(pageable).orElseThrow(() -> new RuntimeException("message"));
+
+        Page<Board> boards = boardRepository.findByStatus(BoardStatus.REGISTERED, pageable)
+                                            .orElseThrow(() -> new RuntimeException("등록된 게시글이 없습니다."));
+                                            
+                                            
+        List<BoardApiResponse> boardApiResponses = boards.stream().map(board -> response(board))
+                                                                    .collect(Collectors.toList());
+        
+        Pagenation pagenation = Pagenation.builder()
+                                            .totalpages(boards.getTotalPages())
+                                            .totalElements(boards.getTotalElements())
+                                            .currentPage(boards.getNumber())
+                                            .currentElements(boards.getNumberOfElements())
+                                            .build();
+
+        return Header.OK(boardApiResponses, pagenation);
     }
 
     
@@ -196,6 +238,19 @@ public class PageLogicService {
                                                             .status(board.getStatus())
                                                             .build();
         boardApiResponse.setFileInfo(files);
+        return boardApiResponse;                                                                
+    }
+    private BoardApiResponse response(Board board){
+        BoardApiResponse boardApiResponse = BoardApiResponse.builder()
+                                                            .id(board.getId())
+                                                            .title(board.getTitle())
+                                                            .content(board.getContent())
+                                                            .registeredAt(board.getRegisteredAt())
+                                                            .unregisteredAt(board.getUnregisteredAt())
+                                                            .createdAt(board.getCreatedAt())
+                                                            .createdBy(board.getCreatedBy())
+                                                            .status(board.getStatus())
+                                                            .build();
         return boardApiResponse;                                                                
     }
 

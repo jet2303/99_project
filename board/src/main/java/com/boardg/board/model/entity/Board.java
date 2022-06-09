@@ -61,7 +61,7 @@ public class Board extends BaseEntity{
     private LocalDateTime registeredAt;
     private LocalDateTime unregisteredAt;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", orphanRemoval = true)
     private List<FileInfo> fileInfoList = new ArrayList<>();
     
     

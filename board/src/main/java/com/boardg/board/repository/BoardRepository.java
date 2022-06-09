@@ -10,6 +10,8 @@ import com.boardg.board.model.entity.FileInfo;
 import com.boardg.board.model.enumclass.BoardStatus;
 import com.boardg.board.model.network.response.BoardApiResponse;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,7 +22,9 @@ public interface BoardRepository extends JpaRepository<Board, Long>{
     
     Optional<List<Board>> findByStatus(BoardStatus boardStatus);
 
-    Optional<List<Board>> findByTitleAndStatus(String title, BoardStatus boardStatus);
+    Optional<Page<Board>> findByTitleAndStatus(String title, BoardStatus boardStatus, Pageable pageable);
+
+    Optional<Page<Board>> findByStatus(BoardStatus boardStatus, Pageable pageable);
 
     //table 이름이 아닌 객체의 이름으로 짤것.
     // @Query(value = "select f from FileInfo f left join Board b f.board where f.boardIdx=:idx")
