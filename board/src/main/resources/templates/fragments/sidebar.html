@@ -2,29 +2,62 @@
 
 <th:block th:fragment="sidebarFragment">    
     <nav class="navbar navbar-expand-md navbar-light">
-      <div class="collapse navbar-collapse" id="sidebar">
-        <div class="container-fluid">
+      <div class="collapse navbar-collapse container-fluid row sidebar fixed-top sidebar-content" id="sidebar">
+        <!-- <div class="container-fluid">
           <div class="row">
-            <div class="col-lg-3 sidebar fixed-top">
-              <a href="#" class="navbar-brand text-white text-center d-block mx-auto py-3 mb-4 bottom-border">sidebar</a>
-              <div class="bottom-border pb-3">
-                
-                <alt="" width="50" class="rounded-circle mr-3">
-                <a href="#" class="text-white">User</a>
-              </div>
-              <ul class="navbar-nav flex-column mt-4">
-                <li class="nav-item">
-                  <a href="#" class="nav-link text-white p-3 mb-2 sidebar-link">
-                    <i class="fas fa-home text-white fa-lg mr-3"></i>Dashboard
-                  </a>
-                </li>
-              </ul>
+            <div class="sidebar fixed-top">
+                <div class="sidebar-content row"> -->
+                  <a href="#" class="navbar-brand text-white d-block mx-auto py-3 mb-4 bottom-border col-lg-12 sidebar-title" style="margin:0 auto;">sidebar</a>
+              
+                  <div class="bottom-border pb-3 col-lg-12">
+                    <!-- <width="50" class="rounded-circle mr-3" > -->
+                    <img class="board-img" src="../../static/images/img_user.jpg">
+                    <a href="#" class="text-white " style="margin:0 auto;">User</a>
+                  </div>
+                  
+                  <ul class="navbar-nav flex-column mt-4 sidebar-content" >
+                      <li class="nav-item" style="list-style: none;">
+                        <a th:href="@{page}" class="nav-link text-white p-3 mb-2 sidebar-link">
+                          <i class="fas fa-home text-white fa-lg mr-3"></i>Board
+                        </a>
+                      </li>
+                      <li class="nav-item" style="list-style: none;">
+                        <a href="#" class="nav-link text-white p-3 mb-2 sidebar-link">
+                          <i class="fas fa-home text-white fa-lg mr-3"></i>Api Test
+                        </a>
+                      </li>
+                      <li class="nav-item" style="list-style: none;">
+                        <a href="#" class="nav-link text-white p-3 mb-2 sidebar-link">
+                          <i class="fas fa-home text-white fa-lg mr-3"></i>Dashboard
+                        </a>
+                      </li>
+                      <li class="nav-item" style="list-style: none;">
+                        <a href="#" class="nav-link text-white p-3 mb-2 sidebar-link">
+                          <i class="fas fa-home text-white fa-lg mr-3"></i>Dashboard
+                        </a>
+                      </li>
+                      <li class="nav-item" style="list-style: none;">
+                        <a href="#" class="nav-link text-white p-3 mb-2 sidebar-link">
+                          <i class="fas fa-home text-white fa-lg mr-3"></i>Dashboard
+                        </a>
+                      </li>
+                      <li class="nav-item" style="list-style: none;">
+                        <a href="#" class="nav-link text-white p-3 mb-2 sidebar-link">
+                          <i class="fas fa-home text-white fa-lg mr-3"></i>Dashboard
+                        </a>
+                      </li>
+                  </ul>
+                  
+                    
+                <!-- </div>
+              
+              <div class="col-lg-8">
+              </div>    
             </div>
-            <div class="col-lg-9">
-
-            </div>
+          
           </div>
-        </div>
+        </div> -->
+          
       </div>
     </nav>
     <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">

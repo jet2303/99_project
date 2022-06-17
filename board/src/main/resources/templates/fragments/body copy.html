@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko" 
+		xmlns:th="http://www.thymeleaf.org" 
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<body th:fragment="main-body">
+		<div class="fixed-navbar">
+			<div class="pull-left">
+				<a th:href="@{/boardPage/page}">
+					<h1 class="page-title" style="color:aliceblue">Board</h1>
+				</a>
+			</div>
+		</div>
+		<!-- <h1></h1> -->
+		<!-- /.fixed-navbar -->		
+		<div id="wrapper">
+			<div class="main-content">
+				
+				<div class="container-fluid">
+					<div class="row">
+						<th:block th:replace="fragments/sidebar" :: sidebarFragment></th:block>	
+						<div class="col-lg-8">
+							<article id="content">
+								<div class="row row-inline-block small-spacing">
+									<div class="col-xs-12">
+										<div class="box-content">
+											<div class="clearfix">
+												<h4 class="box-title pull-left"></h4>			
+												<th:block layout:fragment="search"></th:block>
+											</div>
+					
+											<th:block layout:fragment="content"></th:block>
+					
+											<th:block layout:fragment="paging"></th:block>
+										</div>			
+										<th:block layout:fragment="add-content"></th:block>
+	
+									</div>
+									<!-- /.col-xs-12 -->
+								</div>
+							</article>
+						</div>
+					</div>	
+				</div>	
+				<!-- /.row row-inline-block small-spacing -->
+				<footer class="footer">
+					<ul class="list-inline">
+						<li>2022 @ JS</li>
+					</ul>
+				</footer>
+			</div>
+			<!-- /.main-content -->
+		</div>
+		<!-- /#wrapper -->
+
+		<script th:src="@{/scripts/jquery.min.js}"></script>
+		<script th:src="@{/plugin/bootstrap/js/bootstrap.min.js}"></script>
+		<script th:src="@{/plugin/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js}"></script>
+
+		<script th:src="@{/scripts/main.js}"></script>
+		<script th:src="@{/scripts/common.js}"></script>
+
+		<th:block layout:fragment="script"></th:block>
+	</body>
+</html>

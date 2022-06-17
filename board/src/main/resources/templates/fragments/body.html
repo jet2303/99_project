@@ -3,51 +3,50 @@
 		xmlns:th="http://www.thymeleaf.org" 
 		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 	<body th:fragment="main-body">
-		<div class="fixed-navbar">
-			<div class="pull-left">
-				<a th:href="@{/boardPage/page}">
-					<h1 class="page-title" style="color:aliceblue">Board</h1>
-				</a>
+		<div class="main-box">
+			<div class="fixed-navbar">
+				<div class="pull-left">
+					<a th:href="@{/boardPage/page}">
+						<h1 class="page-title" style="color:aliceblue">Board</h1>
+					</a>
+				</div>
 			</div>
-		</div>
-		<!-- <h1></h1> -->
-		<!-- /.fixed-navbar -->		
-		<div id="wrapper">
-			<div class="main-content">
-				<th:block th:replace="fragments/sidebar" :: sidebarFragment></th:block>	
-				<div class="container-fluid">
-					<div class="grid">
-						<article id="content">
-							<div class="row row-inline-block small-spacing">
-								<div class="col-xs-12">
-									<div class="box-content">
-										<div class="clearfix">
-											<h4 class="box-title pull-left"></h4>			
-											<th:block layout:fragment="search"></th:block>
-										</div>
-				
-										<th:block layout:fragment="content"></th:block>
-				
-										<th:block layout:fragment="paging"></th:block>
-									</div>			
-									<th:block layout:fragment="add-content"></th:block>
-
+			<!-- <h1></h1> -->
+			<!-- /.fixed-navbar -->		
+			<div id="wrapper">
+				<div class="row" style="padding-right: 100px;">
+					<div class="col-md-2">
+						<th:block th:replace="fragments/sidebar" :: sidebarFragment></th:block>	
+					</div>
+					<div class="col-md-10">
+						<div id="content-wrapper" class="d-flex flex-column">
+							<div class="box-content-temp">
+								<div class="clearfix">
+									<h4 class="box-title pull-left"></h4>			
+									<th:block layout:fragment="search"></th:block>
 								</div>
-								<!-- /.col-xs-12 -->
-							</div>
-						</article>
-					</div>	
-				</div>	
-				<!-- /.row row-inline-block small-spacing -->
-				<footer class="footer">
-					<ul class="list-inline">
-						<li>2022 @ JS</li>
-					</ul>
-				</footer>
+		
+								<th:block layout:fragment="content"></th:block>
+		
+								<th:block layout:fragment="paging"></th:block>
+							</div>			
+							<th:block layout:fragment="add-content"></th:block>
+						</div>
+					</div>
+				</div>
+					
+					<!-- /.row row-inline-block small-spacing -->
+					<footer class="footer">
+						<ul class="list-inline">
+							<li>2022 @ JS</li>
+						</ul>
+					</footer>
+				
+				<!-- /.main-content -->
 			</div>
-			<!-- /.main-content -->
+			<!-- /#wrapper -->	
 		</div>
-		<!-- /#wrapper -->
+		
 
 		<script th:src="@{/scripts/jquery.min.js}"></script>
 		<script th:src="@{/plugin/bootstrap/js/bootstrap.min.js}"></script>

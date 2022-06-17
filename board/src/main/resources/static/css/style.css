@@ -41,6 +41,7 @@ body {
   -moz-transition: -moz-transform 0.4s ease;
   -o-transition: -o-transform 0.4s ease;
   -ms-transition: -ms-transform 0.4s ease;
+  padding-top: 80px;
 }
 @media (min-width: 1025px) {
   #wrapper {
@@ -833,6 +834,7 @@ Version 1.0
   padding: 0px 20px 0px 20px;
   background: #1d84df;
   color: #ffffff;
+  clear: both;
 }
 .fixed-navbar .searchform {
   opacity: 0;
@@ -1386,17 +1388,22 @@ textarea.form-control {
 }
 
 .sidebar{
-  height: 100vh;
-  width: 30vh;
+  height: 80vh;
+  width: 25vh;
   background: linear-gradient(rgba(228, 97, 97, 0.7), rgba(138, 6, 6, 0.9) );
   background-image: url("../images/01.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   box-shadow: 5px 7px 25px #999;
+  line-height: 350%;
+  /* flex-direction: column; */
+  /* display: flex; */
 }
 .bottom-border{
   border-bottom: 2px groove #e4e7ea;
+  display: flex;
+  /* line-height: 50%; */
 }
 .sidebar-link{
   transition: all .4s;
@@ -1405,6 +1412,20 @@ textarea.form-control {
   background-color: #222129;
   border-radius: 5px;
 }
+.sidebar-content{
+  /* row 배치 */
+  display: flex;
+  flex-direction: column;
+  margin:0% auto;
+  /* padding-left: 40px; */
+}
+.sidebar-title{
+  /* 가운데 정렬 */
+  text-align: center;
+  /* flex로 설정된 경우 가운데 정렬되지 않기때문에 추가 */
+  justify-content : center;
+}
+
 /*---------------------------------------------------------------------*/
 
 .form-group .form-control {height: auto;}
